@@ -1,0 +1,27 @@
+meta {
+  name: Get All Categories
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:{{port}}/Category?pageNumber=1&pageSize=10
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+script:post-response {
+  console.log(res.body);
+  if (res.status !== 200) {
+    console.error("❌ [GET CATEGORIES] Failed with status:", res.status);
+    console.error("Response body:", JSON.stringify(res.body, null, 2));
+  } else {
+    console.log("✅ [GET CATEGORIES] Success!");
+    console.log("Categories retrieved:", res.body.length);
+
+  }
+}

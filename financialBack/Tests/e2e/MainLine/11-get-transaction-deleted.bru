@@ -1,0 +1,30 @@
+meta {
+  name: Get All Transactions
+  type: http
+  seq: 11
+}
+
+get {
+  url: http://localhost:{{port}}/Transaction/{{transaction2Id}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}
+
+script:post-response {
+  console.log(res.body);
+  if (res.status !== 404) {
+    console.error("❌ [GET DELETED TRANSACTION] Expected 404 but got:", res.status);
+    console.error("Transaction ID used:", bru.getVar("transaction2Id"));
+    console.error("Response body:", JSON.stringify(res.body, null, 2));
+  } else {
+    console.log("✅ [GET DELETED TRANSACTION] Correctly received 404 for deleted transaction.");
+    console.log("Transaction ID confirmed deleted:", bru.getVar("transaction2Id"));
+    console.log("🎉 [E2E TEST] All tests completed successfully!");
+  }
+}
+
+

@@ -1,0 +1,27 @@
+meta {
+  name: Get All Transactions
+  type: http
+  seq: 7
+}
+
+get {
+  url: http://localhost:{{port}}/Transaction?pageNumber=1&pageSize=10&userId={{userId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+script:post-response {
+  console.log(res.body);
+  if (res.status !== 200) {
+    console.error("❌ [GET TRANSACTIONS] Failed with status:", res.status);
+    console.error("User ID used:", bru.getVar("userId"));
+    console.error("Response body:", JSON.stringify(res.body, null, 2));
+  } else {
+    console.log("✅ [GET TRANSACTIONS] Success!");
+    console.log("Transactions Data:", JSON.stringify(res.body, null, 2));
+  }
+}

@@ -1,0 +1,34 @@
+meta {
+  name: Update User
+  type: http
+  seq: 2
+}
+
+put {
+  url: http://localhost:{{port}}/User/{{userId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Test User E2E Updated",
+    "age": 35
+  }
+}
+
+assert {
+  res.status: eq 204
+}
+
+script:post-response {
+  if (res.status !== 200) {
+    console.error("❌ [UPDATE USER] Failed with status:", res.status);
+    console.error("User ID used:", bru.getVar("userId"));
+    console.error("Response body:", JSON.stringify(res.body, null, 2));
+  } else {
+    console.log("✅ [UPDATE USER] Success!");
+    console.log("Updated User ID:", res.body.id);
+    console.log("Updated Data:", JSON.stringify(res.body, null, 2));
+  }
+}

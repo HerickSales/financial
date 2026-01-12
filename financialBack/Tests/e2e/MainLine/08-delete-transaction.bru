@@ -1,0 +1,26 @@
+meta {
+  name: Delete Transaction
+  type: http
+  seq: 8
+}
+
+delete {
+  url: http://localhost:{{port}}/Transaction/{{transactionId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}
+
+script:post-response {
+  if (res.status !== 200) {
+    console.error("❌ [DELETE TRANSACTION] Failed with status:", res.status);
+    console.error("Transaction ID used:", bru.getVar("transactionId"));
+    console.error("Response body:", JSON.stringify(res.body, null, 2));
+  } else {
+    console.log("✅ [DELETE TRANSACTION] Success!");
+    console.log("Deleted Transaction ID:", bru.getVar("transactionId"));
+  }
+}

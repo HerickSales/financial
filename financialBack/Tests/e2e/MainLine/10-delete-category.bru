@@ -1,0 +1,26 @@
+meta {
+  name: Delete Category
+  type: http
+  seq: 10
+}
+
+delete {
+  url: http://localhost:{{port}}/Category/{{categoryId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}
+
+script:post-response {
+  if (res.status !== 200) {
+    console.error("❌ [DELETE CATEGORY] Failed with status:", res.status);
+    console.error("Category ID used:", bru.getVar("categoryId"));
+    console.error("Response body:", JSON.stringify(res.body, null, 2));
+  } else {
+    console.log("✅ [DELETE CATEGORY] Success!");
+    console.log("Deleted Category ID:", bru.getVar("categoryId"));
+  }
+}

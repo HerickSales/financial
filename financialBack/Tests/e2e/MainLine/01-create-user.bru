@@ -1,0 +1,30 @@
+meta {
+  name: E2E MainLine Test Flow
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:{{port}}/User
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Test User E2E",
+    "age": 30
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.data.id: isDefined
+}
+
+script:post-response {
+  console.log("User created with ID:", res.body.data.id);
+  if (res.body.data && res.body.data.id) {
+    bru.setVar("userId", res.body.data.id);
+  }
+}

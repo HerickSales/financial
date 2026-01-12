@@ -1,0 +1,45 @@
+meta {
+  name: Create Transaction
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:{{port}}/Transaction
+  body: json
+  auth: none
+}
+
+script:pre-request {
+  var categoryId = bru.getVar("categoryId");
+  var userId = bru.getVar("userId");
+  req.setBody ({
+    description: "Test Transaction E2E",
+    value: 150.50,
+    type: "expense",
+    categoryId: categoryId,
+    userId: userId
+  });
+
+  
+}
+assert {
+  res.status: eq 201
+  res.body.data.id: isDefined
+
+}
+
+script:post-response {
+  console.log(res.body);
+  if (res.status !== 201) {
+    console.error("❌ [CREATE TRANSACTION] Failed with status:", res.status);
+    console.error("Category ID used:", bru.getVar("categoryId"));
+    console.error("User ID used:", bru.getVar("userId"));
+    console.error("Response body:", JSON.stringify(res.body, null, 2));
+  } else {
+    console.log("✅ [CREATE TRANSACTION] Success!");
+    console.log("Transaction ID:", res.body.id);
+    console.log("Transaction Data:", JSON.stringify(res.body, null, 2));
+    bru.setVar("transaction2Id", res.body.data.id);
+  }
+}
